@@ -3,7 +3,9 @@ guid: 4e171cf8ad6361d4e94a3eecbd1ebac9
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - mLobbyPlayerPrefab: {fileID: 1132751874385037769, guid: 881310154e4074846add8d37c21015ad,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
