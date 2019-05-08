@@ -6,17 +6,6 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 	Rigidbody mRigidody = null;
 	[SerializeField]
 	TextMesh mText = null;
-	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-	{
-		if(stream.IsWriting)
-		{
-			stream.SendNext(mText.gameObject.activeSelf);
-		}
-		else
-		{
-			mText.gameObject.SetActive((bool)stream.ReceiveNext());
-		}
-	}
 	void Move()
 	{
 		if(mRigidody == null)
@@ -27,6 +16,17 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		vec.x = Input.GetAxis("Horizontal");
 		vec.z = Input.GetAxis("Vertical");
 		mRigidody.AddForce(vec, ForceMode.VelocityChange);
+	}
+	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	{
+		if(stream.IsWriting)
+		{
+			stream.SendNext(mText.gameObject.activeSelf);
+		}
+		else
+		{
+			mText.gameObject.SetActive((bool)stream.ReceiveNext());
+		}
 	}
 	void Start()
 	{
