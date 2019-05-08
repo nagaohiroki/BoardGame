@@ -1,29 +1,25 @@
 ﻿using UnityEngine;
 using Photon.Pun;
-public class LobbyPlayer : MonoBehaviourPun
+public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 {
-	Transform mCameraHandle = null;
 	[SerializeField]
 	Rigidbody mRigidody = null;
-	public void Initialize(Transform inCameraHandle)
+	[SerializeField]
+	TextMesh mText = null;
+	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
 	{
-		mCameraHandle = inCameraHandle;
-	}
-	void Update()
-	{
-		if(!photonView.IsMine && PhotonNetwork.IsConnected)
+		if(stream.IsWriting)
 		{
-			return;
+			stream.SendNext(mText.gameObject.activeSelf);
 		}
-		if(mCameraHandle != null)
+		else
 		{
-			mCameraHandle.position = transform.position;
+			mText.gameObject.SetActive((bool)stream.ReceiveNext());
 		}
-		Move();
 	}
 	void Move()
 	{
-		if (mRigidody == null)
+		if(mRigidody == null)
 		{
 			return;
 		}
@@ -31,5 +27,22 @@ public class LobbyPlayer : MonoBehaviourPun
 		vec.x = Input.GetAxis("Horizontal");
 		vec.z = Input.GetAxis("Vertical");
 		mRigidody.AddForce(vec, ForceMode.VelocityChange);
+	}
+	void Start()
+	{
+		mText.text = photonView.Owner.NickName;
+	}
+	void Update()
+	{
+		if(!photonView.IsMine && PhotonNetwork.IsConnected)
+		{
+			return;
+		}
+		if(Input.GetKeyDown(KeyCode.Space))
+		{
+			mText.gameObject.SetActive(!mText.gameObject.activeSelf);
+		}
+		Move();
+		Camera.main.transform.parent.position = transform.position;
 	}
 }
