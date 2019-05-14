@@ -6,17 +6,7 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 	Rigidbody mRigidody = null;
 	[SerializeField]
 	TextMesh mText = null;
-	void Move()
-	{
-		if(mRigidody == null)
-		{
-			return;
-		}
-		var vec = Vector3.zero;
-		vec.x = Input.GetAxis("Horizontal");
-		vec.z = Input.GetAxis("Vertical");
-		mRigidody.AddForce(vec, ForceMode.VelocityChange);
-	}
+	GameManager mGameManager;
 	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
 	{
 		if(stream.IsWriting)
@@ -27,6 +17,21 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		{
 			mText.gameObject.SetActive((bool)stream.ReceiveNext());
 		}
+	}
+	public void Initialize(GameManager inGameManager)
+	{
+		mGameManager = inGameManager;
+	}
+	void Move()
+	{
+		if(mRigidody == null)
+		{
+			return;
+		}
+		var vec = Vector3.zero;
+		vec.x = Input.GetAxis("Horizontal");
+		vec.z = Input.GetAxis("Vertical");
+		mRigidody.AddForce(vec, ForceMode.VelocityChange);
 	}
 	void Start()
 	{
@@ -41,6 +46,13 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
 			mText.gameObject.SetActive(!mText.gameObject.activeSelf);
+		}
+		if(Input.GetKeyDown(KeyCode.W))
+		{
+			if(mGameManager != null)
+			{
+				mGameManager.Win();
+			}
 		}
 		Move();
 		Camera.main.transform.parent.position = transform.position;
