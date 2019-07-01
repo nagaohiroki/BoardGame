@@ -1,32 +1,49 @@
 ﻿using UnityEngine.SceneManagement;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 public class GameManager : MonoBehaviourPunCallbacks
 {
 	[SerializeField]
 	GameObject mLobbyPlayerPrefab = null;
 	[SerializeField]
 	Text mTelop = null;
+	[SerializeField]
+	Text mDebugLog = null;
+	Dictionary<string, bool> mTurn;
 	public override void OnLeftRoom()
 	{
 		SceneManager.LoadScene("Login");
+	}
+	public override void OnJoinedRoom()
+	{
+		Debug.LogWarning("ログイン");
+	}
+	public override void OnPlayerEnteredRoom(Player other)
+	{
+		// 他のプレイヤーが入ってきた
+		Debug.LogWarning("ログイン" + other.NickName);
 	}
 	public void LeaveRoom()
 	{
 		PhotonNetwork.LeaveRoom();
 	}
-	public void Win()
+	public void TurnEnd()
 	{
-		mTelop.gameObject.SetActive(true);
-		mTelop.text = "You Win";
-		photonView.RPC("Lose", RpcTarget.Others);
+		photonView.RPC("TurnNext", RpcTarget.Others);
 	}
+   
 	[PunRPC]
-	void Lose()
+	void TurnNext()
 	{
-		mTelop.gameObject.SetActive(true);
-		mTelop.text = "You Lose";
+		mDebugLog.text = string.Empty;
+		foreach(var player in PhotonNetwork.CurrentRoom.Players)
+		{
+			var text =  player.Key + ":" + player.Value.NickName + ":" + player.Value.UserId + "\n";
+			mDebugLog.text += text;
+		}
 	}
 	void LoadArena()
 	{
@@ -47,6 +64,17 @@ public class GameManager : MonoBehaviourPunCallbacks
 		if(!PhotonNetwork.IsConnected)
 		{
 			OnLeftRoom();
+			return;
 		}
+	}
+	void SetTelop(string inTelop)
+	{
+		if(string.IsNullOrEmpty(inTelop))
+		{
+			mTelop.gameObject.SetActive(false);
+			return;
+		}
+		mTelop.gameObject.SetActive(true);
+		mTelop.text = inTelop;
 	}
 }

@@ -21,6 +21,7 @@ public class Launcher : MonoBehaviourPunCallbacks
 	public override void OnJoinRandomFailed(short returnCode, string message)
 	{
 		var room = new RoomOptions();
+		room.PublishUserId = true;
 		room.MaxPlayers = mMaxPlayerPerRoom;
 		PhotonNetwork.CreateRoom(null, room);
 	}

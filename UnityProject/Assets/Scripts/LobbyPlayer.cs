@@ -45,13 +45,9 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		}
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
-			mText.gameObject.SetActive(!mText.gameObject.activeSelf);
-		}
-		if(Input.GetKeyDown(KeyCode.W))
-		{
 			if(mGameManager != null)
 			{
-				mGameManager.Win();
+				mGameManager.TurnEnd();
 			}
 		}
 		Move();
