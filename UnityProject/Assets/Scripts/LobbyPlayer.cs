@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using Photon.Pun;
 public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -7,6 +8,8 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 	[SerializeField]
 	TextMesh mText = null;
 	GameManager mGameManager;
+	readonly List<bool> mCardList = new List<bool>();
+	int mIndex;
 	public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
 	{
 		if(stream.IsWriting)
@@ -33,9 +36,32 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		vec.z = Input.GetAxis("Vertical");
 		mRigidody.AddForce(vec, ForceMode.VelocityChange);
 	}
+
+	void InitializeCardList()
+	{
+		// カード初期化
+		for(int i = 0; i < 14; i++)
+		{
+			mCardList.Add(false);
+		}
+	}
+	void UpdateGame()
+	{
+		string text = string.Empty;
+		for(int i = 0; i < mCardList.Count; i++)
+		{
+			string arrow = i == mIndex ? ">" : " ";
+			text += string.Format("{0}{1}:{2}\n", arrow, i, mCardList[i]);
+		}
+		if(mGameManager != null)
+		{
+			mGameManager.UpdateText(text);
+		}
+	}
 	void Start()
 	{
 		mText.text = photonView.Owner.NickName;
+		InitializeCardList();
 	}
 	void Update()
 	{
@@ -50,7 +76,8 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 				mGameManager.TurnEnd();
 			}
 		}
-		Move();
+		// Move();
+		UpdateGame();
 		Camera.main.transform.parent.position = transform.position;
 	}
 }

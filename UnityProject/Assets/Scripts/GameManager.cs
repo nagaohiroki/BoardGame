@@ -32,16 +32,22 @@ public class GameManager : MonoBehaviourPunCallbacks
 	}
 	public void TurnEnd()
 	{
-		photonView.RPC("TurnNext", RpcTarget.Others);
+		photonView.RPC("TurnNext", RpcTarget.All);
 	}
-   
+	public void UpdateText(string inText)
+	{
+		if(mDebugLog)
+		{
+			mDebugLog.text = inText;
+		}
+	}
 	[PunRPC]
 	void TurnNext()
 	{
 		mDebugLog.text = string.Empty;
 		foreach(var player in PhotonNetwork.CurrentRoom.Players)
 		{
-			var text =  player.Key + ":" + player.Value.NickName + ":" + player.Value.UserId + "\n";
+			var text =  string.Format("{0}:{1}:{2}\n", player.Key, player.Value.NickName, player.Value.UserId);
 			mDebugLog.text += text;
 		}
 	}
