@@ -47,7 +47,24 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 	}
 	void UpdateGame()
 	{
+		if(Input.GetKeyDown(KeyCode.UpArrow))
+		{
+			--mIndex;
+		}
+		if(Input.GetKeyDown(KeyCode.DownArrow))
+		{
+			++mIndex;
+		}
+		mIndex = (int)Mathf.Repeat(mIndex, mCardList.Count);
 		string text = string.Empty;
+		var hand = new List<mCardList>();
+		foreach (var card in  mCardList)
+		{
+			if (card)
+			{
+				hand.Add(card);
+			}
+		}
 		for(int i = 0; i < mCardList.Count; i++)
 		{
 			string arrow = i == mIndex ? ">" : " ";
@@ -56,6 +73,10 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		if(mGameManager != null)
 		{
 			mGameManager.UpdateText(text);
+		}
+		if(Input.GetKeyDown(KeyCode.Return))
+		{
+			mCardList[mIndex] = true;
 		}
 	}
 	void Start()
