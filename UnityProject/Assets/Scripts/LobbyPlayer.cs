@@ -57,14 +57,14 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		}
 		mIndex = (int)Mathf.Repeat(mIndex, mCardList.Count);
 		string text = string.Empty;
-		var hand = new List<mCardList>();
-		foreach (var card in  mCardList)
-		{
-			if (card)
-			{
-				hand.Add(card);
-			}
-		}
+	//	var hand = new List<mCardList>();
+	//	foreach (var card in  mCardList)
+	//	{
+	//		if (card)
+	//		{
+	//			hand.Add(card);
+	//		}
+	//	}
 		for(int i = 0; i < mCardList.Count; i++)
 		{
 			string arrow = i == mIndex ? ">" : " ";
