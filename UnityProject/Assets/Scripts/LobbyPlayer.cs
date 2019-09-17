@@ -35,6 +35,7 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		vec.x = Input.GetAxis("Horizontal");
 		vec.z = Input.GetAxis("Vertical");
 		mRigidody.AddForce(vec, ForceMode.VelocityChange);
+		Camera.main.transform.parent.position = transform.position;
 	}
 
 	void InitializeCardList()
@@ -77,6 +78,19 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 		if(Input.GetKeyDown(KeyCode.Return))
 		{
 			mCardList[mIndex] = true;
+			if(mGameManager != null)
+			{
+				mGameManager.TurnEnd();
+			}
+		}
+	}
+
+	void ResetPosition()
+	{
+		if (mRigidody != null)
+		{
+			mRigidody.Sleep();
+			mRigidody.MovePosition(new Vector3(0.0f, 1.0f, 0.0f));
 		}
 	}
 	void Start()
@@ -96,9 +110,9 @@ public class LobbyPlayer : MonoBehaviourPunCallbacks, IPunObservable
 			{
 				mGameManager.TurnEnd();
 			}
+			ResetPosition();
 		}
-		// Move();
-		UpdateGame();
-		Camera.main.transform.parent.position = transform.position;
+		Move();
+	//	UpdateGame();
 	}
 }
